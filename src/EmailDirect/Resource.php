@@ -19,5 +19,10 @@ abstract class EmailDirect_Resource
         $this->_id = $id;
         return $this;
     }
+    
+    public function __invoke($id)
+    {
+        return $this->setId($id);
+    }
 }
 

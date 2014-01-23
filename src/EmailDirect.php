@@ -6,7 +6,7 @@ class EmailDirect
     
     public static $headers = array(
         'User-Agent' => 'emaildirect-rest-v1',
-        'Content-Type' => 'application/json; charset=utf-8',
+        'Content-Type' => 'application/json',
     );
     
     /**
@@ -33,7 +33,7 @@ class EmailDirect
             $this->_mapResources[$class] = new $class($this->getAdapter());
         }
         if (isset($args[0])) {
-            $this->setId($args[0]);
+            $this->_mapResources[$class]->setId($args[0]);
         }
         return $this->_mapResources[$class];
     }
@@ -52,4 +52,17 @@ class EmailDirect
         return $this->_adapter;
     }
     
+    public static function loadClass($class) 
+    {
+        $file = dirname(__FILE__) . DIRECTORY_SEPARATOR . strtr($class, array('_' => DIRECTORY_SEPARATOR)) . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return true;
+        }
+    }
+    
+    public static function register($prepend = false)
+    {
+        spl_autoload_register(array('EmailDirect', 'loadClass'), true, $prepend);
+    }
 }

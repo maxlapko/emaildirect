@@ -7,7 +7,6 @@
  */
 class EmailDirect_Bounces extends EmailDirect_Resource
 {
-    //put your code here
     
     public function details()
     {

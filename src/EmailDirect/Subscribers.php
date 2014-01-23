@@ -39,9 +39,9 @@ class EmailDirect_Subscribers extends EmailDirect_Resource
     
     // specific subscriber
     
-    public function update($data = array())
+    public function update($email, $data = array())
     {
-        $data = array_merge($data, array('EmailAddress' => $this->_id));
+        $data = array_merge($data, array('EmailAddress' => $email));
         return $this->_adapter->put('/Subscribers/' . $this->_id, $data);
     }
     

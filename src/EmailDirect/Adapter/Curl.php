@@ -76,12 +76,13 @@ class EmailDirect_Adapter_Curl
             if (is_array($params)) {
                 $params = json_encode($params);
             }
-            
             if (!empty($params)) {
                 $this->setOption(CURLOPT_POSTFIELDS, $params);
             } 
         }
-        
+        foreach ($this->_defaultHeaders as $key => $value) {
+            $this->setHeader($key, $value);
+        }
         // Add in the specific options provided
         $this->setOptions($options);
 
@@ -95,7 +96,11 @@ class EmailDirect_Adapter_Curl
 
     public function setHttpMethod($method)
     {
-        $this->_options[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
+        $method = strtoupper($method);
+        $this->_options[CURLOPT_CUSTOMREQUEST] = $method;
+        if ($method === 'PUT') {
+            $this->option(CURLOPT_HTTPHEADER, array('X-HTTP-Method-Override: PUT'));
+        }
         return $this;
     }
 
@@ -175,7 +180,6 @@ class EmailDirect_Adapter_Curl
         if (!empty($this->_headers)) {
             $this->setOption(CURLOPT_HTTPHEADER, $this->_headers);
         }
-
         $this->setOptions();
 
         // Execute the request & and hide all output
@@ -184,10 +188,7 @@ class EmailDirect_Adapter_Curl
 
         // Request failed
         if ($this->_response === false) {
-            $this->errorCode = curl_errno($this->_ch);
-            $this->errorString = curl_error($this->_ch);
-            $this->_setDefaults();
-            return false;
+            throw new EmailDirect_Exception(curl_error($this->_ch), curl_errno($this->_ch));
         } else { // Request successful
             $this->_setDefaults();
             return $this->_parseResponse();
@@ -197,7 +198,7 @@ class EmailDirect_Adapter_Curl
     protected function _parseResponse()
     {
         $response = json_decode($this->_response, true);
-        if ($this->info['http_code'] === 200) {
+        if ($this->info['http_code'] === 200 || $this->info['http_code'] === 201) {
             return $response;
         }
         throw new EmailDirect_Exception($response['Message'], $response['ErrorCode']);
