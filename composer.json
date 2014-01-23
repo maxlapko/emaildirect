@@ -5,6 +5,7 @@
     "description": "Php wrapper for email direct",
     "keywords": ["email", "api"],
     "homepage": "http://docs.emaildirect.com",
+    "license": "BSD-3-Clause",
     "require": {
         "php": ">=5.2.0"
     },
