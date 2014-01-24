@@ -70,15 +70,11 @@ class EmailDirect_Adapter_Curl
             // If a URL is provided, create new session
             $this->setOption(CURLOPT_URL, $this->_baseUrl . $url . ($params ? '?' . http_build_query($params) : ''));
         } else {
-            
             $this->setOption(CURLOPT_URL, $this->_baseUrl . $url);
             
-            if (is_array($params)) {
-                $params = json_encode($params);
-            }
             if (!empty($params)) {
-                $this->setOption(CURLOPT_POSTFIELDS, $params);
-            } 
+                $this->setOption(CURLOPT_POSTFIELDS, json_encode($params));
+            }
         }
         foreach ($this->_defaultHeaders as $key => $value) {
             $this->setHeader($key, $value);
@@ -99,7 +95,9 @@ class EmailDirect_Adapter_Curl
         $method = strtoupper($method);
         $this->_options[CURLOPT_CUSTOMREQUEST] = $method;
         if ($method === 'PUT') {
-            $this->option(CURLOPT_HTTPHEADER, array('X-HTTP-Method-Override: PUT'));
+            $this->setHeader('X-HTTP-Method-Override', 'PUT');
+        } elseif ($method === 'POST') {
+            $this->_options[CURLOPT_POST] = true;
         }
         return $this;
     }
@@ -157,7 +155,7 @@ class EmailDirect_Adapter_Curl
 
     // End a session and return the results
     public function execute()
-    {
+    {   
         // Set two default options, and merge any extra ones in
         if (!isset($this->_options[CURLOPT_TIMEOUT])) {
             $this->_options[CURLOPT_TIMEOUT] = 30;
@@ -165,33 +163,31 @@ class EmailDirect_Adapter_Curl
         if (!isset($this->_options[CURLOPT_RETURNTRANSFER])) {
             $this->_options[CURLOPT_RETURNTRANSFER] = true;
         }
-        if (!isset($this->_options[CURLOPT_FAILONERROR])) {
-            $this->_options[CURLOPT_FAILONERROR] = true;
-        }
-
+        
         // Only set follow location if not running securely
-        if (!ini_get('safe_mode') && !ini_get('open_basedir')) {
+        if (!ini_get('safe_mode') && !ini_get('open_basedir') && !isset($this->_options[CURLOPT_FOLLOWLOCATION])) {
             // Ok, follow location is not set already so lets set it to true
-            if (!isset($this->_options[CURLOPT_FOLLOWLOCATION])) {
-                $this->_options[CURLOPT_FOLLOWLOCATION] = true;
-            }
+            $this->_options[CURLOPT_FOLLOWLOCATION] = true;
         }
 
         if (!empty($this->_headers)) {
             $this->setOption(CURLOPT_HTTPHEADER, $this->_headers);
         }
         $this->setOptions();
-
+        
         // Execute the request & and hide all output
         $this->_response = curl_exec($this->_ch);
         $this->info = curl_getinfo($this->_ch);
-
+        
         // Request failed
         if ($this->_response === false) {
-            throw new EmailDirect_Exception(curl_error($this->_ch), curl_errno($this->_ch));
+            return new EmailDirect_Response(array(
+                'Message' => curl_error($this->_ch),
+                'ErrorCode' => curl_errno($this->_ch)
+            ), $this->info);
         } else { // Request successful
             $this->_setDefaults();
-            return $this->_parseResponse();
+            return new EmailDirect_Response($this->_response, $this->info);
         }
     }
     
