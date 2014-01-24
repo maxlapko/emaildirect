@@ -40,28 +40,6 @@ class EmailDirect_Adapter_Curl
         return function_exists('curl_init');
     }
 
-    public function debug()
-    {
-        echo "=============================================<br/>\n";
-        echo "<h2>CURL Test</h2>\n";
-        echo "=============================================<br/>\n";
-        echo "<h3>Response</h3>\n";
-        echo "<code>" . nl2br(htmlentities($this->_response)) . "</code><br/>\n\n";
-
-        if ($this->errorString) {
-            echo "=============================================<br/>\n";
-            echo "<h3>Errors</h3>";
-            echo "<strong>Code:</strong> " . $this->errorCode . "<br/>\n";
-            echo "<strong>Message:</strong> " . $this->errorString . "<br/>\n";
-        }
-
-        echo "=============================================<br/>\n";
-        echo "<h3>Info</h3>";
-        echo "<pre>";
-        print_r($this->info);
-        echo "</pre>";
-    }
-
     public function simpleCall($method, $url, $params = array(), $options = array())
     {
         $this->setHttpMethod($method);

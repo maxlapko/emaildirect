@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of EmailDirect_CreativeFolders
+ * Description of CreativeFolders
  *
  * @author mlapko
  */

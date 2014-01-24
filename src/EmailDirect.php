@@ -72,6 +72,7 @@ class EmailDirect
     }
     
     /**
+     * Http client
      * @return EmailDirect_Adapter_Curl
      */
     public function getAdapter()

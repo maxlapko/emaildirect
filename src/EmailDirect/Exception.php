@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of EmailDirect_Exception
+ * Description of Exception
  *
  * @author mlapko
  */

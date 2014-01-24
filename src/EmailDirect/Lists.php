@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of EmailDirect_Lists
+ * Description of Lists
  *
  * @author mlapko
  */

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of EmailDirect_Filters
+ * Description of Filters
  *
  * @author mlapko
  */
