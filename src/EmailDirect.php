@@ -24,6 +24,11 @@
  * @method EmailDirect_ImageFiles imageFiles($filePath = null) image files
  * @method EmailDirect_Orders orders($orderNumber = null) orders
  * @method EmailDirect_OrderItems orderItems($orderItemId = null) order items
+ * @method EmailDirect_Accounts accounts($accountName = null) private label accounts
+ * @method EmailDirect_ShortUrls shortUrls($shortUrl = null) short urls
+ * @method EmailDirect_Smtp smtp($smtpUserName = null) smtp logins
+ * @method EmailDirect_Sources sources($sourceId = null) sources
+ * @method EmailDirect_SuppressionLists suppressionLists($suppressionListId = null) suppression lists
  */
 class EmailDirect
 {

@@ -5,7 +5,7 @@
  *
  * @author mlapko
  */
-class EmailDirect_Response
+class EmailDirect_Response implements ArrayAccess
 {   
     protected $_response;
     
@@ -76,6 +76,38 @@ class EmailDirect_Response
     public function getRequestInfo()
     {
         return $this->_requestInfo;
+    }
+    
+    public function __get($name)
+    {
+        if ($this->offsetExists($name)) {
+            return $this->_responseData[$name];
+        }
+        throw new EmailDirect_Exception('The response does not exist "' . $name . '" property.');
+    }
+    
+    public function offsetExists($offset)
+    {
+        return isset($this->_responseData[$offset]);
+    }
+    
+    public function offsetGet($offset)
+    {
+        return isset($this->_responseData[$offset]) ? $this->_responseData[$offset] : null;
+    }
+    
+    public function offsetSet($offset, $value)
+    {
+        if ($offset === null) {
+            $this->_responseData[] = $value;
+        } else {
+            $this->_responseData[$offset] = $value;
+        }
+    }
+    
+    public function offsetUnset($offset)
+    {
+        unset($this->_responseData[$offset]);
     }
     
 }

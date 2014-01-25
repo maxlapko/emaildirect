@@ -67,13 +67,12 @@ class EmailDirect_Subscribers extends EmailDirect_Resource
     
     /**
      * @link http://docs.emaildirect.com/#SubscriberUpdate
-     * @param string $email
      * @param array $data
      * @return EmailDirect_Response
      */
-    public function update($email, $data = array())
+    public function update($data = array())
     {
-        $data = array_merge($data, array('EmailAddress' => $email));
+        $data = array_merge($data, array('EmailAddress' => $this->_id));
         return $this->_adapter->put('/Subscribers/' . $this->_id, $data);
     }
     
