@@ -57,7 +57,7 @@ class EmailDirect_Subscribers extends EmailDirect_Resource
      */
     public function create($email, $data = array())
     {
-        $data = array_merge($data, array(
+        $data = array_merge(array($data), array(
             'EmailAddress' => $email
         ));
         return $this->_adapter->post('/Subscribers', $data);
